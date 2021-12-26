@@ -1,0 +1,11 @@
+Program should be able to:
+
+- encrypt any file to '.def' (Dawid's encrypted file) extension with default algorithm using user's password.
+- decrypt '.def' file to its native extension using user's password.
+
+User should be able to:
+
+- specify which file should be encrypted/decrypted
+- specify output path (if different from original file path)
+- type password with a possibility to show typed text
+
