@@ -106,7 +106,7 @@ public class CryptoUtils implements Cryptoable {
         cipher.init(mode,secretKey);
     }
 
-    private byte[] createKey(String password) throws NoSuchAlgorithmException, InvalidKeySpecException {
+    public byte[] createKey(String password) throws NoSuchAlgorithmException, InvalidKeySpecException {
         KeySpec spec = new PBEKeySpec(password.toCharArray(), SALT.getBytes(), 65536, 256);
         SecretKeyFactory f = SecretKeyFactory.getInstance("PBKDF2WithHmacSHA1");
         return f.generateSecret(spec).getEncoded();

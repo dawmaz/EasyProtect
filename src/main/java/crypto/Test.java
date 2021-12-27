@@ -1,34 +1,53 @@
 package crypto;
 
 import javax.crypto.BadPaddingException;
+import javax.crypto.Cipher;
 import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
+import javax.crypto.spec.SecretKeySpec;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.security.InvalidKeyException;
+import java.security.Key;
 import java.security.NoSuchAlgorithmException;
 import java.security.spec.InvalidKeySpecException;
 import java.util.Arrays;
 
 public class Test {
 
-    public static void main(String[] args) throws NoSuchPaddingException, IllegalBlockSizeException, NoSuchAlgorithmException, IOException, BadPaddingException, InvalidKeyException, InvalidKeySpecException {
-        CryptoUtils utils= new CryptoUtils();
-        //utils.encrypt("1234",new File("C:\\Users\\Dawid\\eclipse-workspace2\\EasyProtect\\Dawid_CV_U.docx"),new File("C:\\Users\\Dawid\\eclipse-workspace2\\EasyProtect\\Dawid_CV_U.enc"));
-        //utils.decrypt("1234",new File("C:\\Users\\Dawid\\eclipse-workspace2\\EasyProtect\\Dawid_CV_U.enc"),new File("C:\\Users\\Dawid\\eclipse-workspace2\\EasyProtect\\src"));
+    public static void main(String[] args) throws Exception {
 
-      //  int[] array = {10, 20, 30, 40, 50, 60, 70, 80, 90, 100};
-       // int index = 3;
+        encrypt(new File("E:\\Harry Potter The Complete Saga - 1080p - Yify\\HARRY-POTTER-07-1080p\\HARRY-POTTER-07-1080p\\Harry.Potter.and.the.Deathly.Hallows.Part.1.2010.MULTi.1080p.BluRay.x264.mkv"),"pass".getBytes());
+    }
 
-       // System.out.println(Arrays.toString( Arrays.copyOfRange(array,1,array.length)));
-        File file =new File("C:\\Users\\Dawid\\eclipse-workspace2\\EasyProtect\\Dawid_CV_U.docx");
-        System.out.println(file.getName());
-        System.out.println(file.getPath());
-        System.out.println(file.getAbsoluteFile());
-        System.out.println(file.getAbsolutePath());
-        System.out.println(file.getCanonicalFile());
-        System.out.println(file.getCanonicalPath());
-        System.out.println(file.getParentFile());
+    public static  File encrypt(File f, byte[] key) throws Exception
+    {
+        System.out.println("Starting Encryption");
+        Key secretKey = new SecretKeySpec(new CryptoUtils().createKey("pass"),"AES");
+        Cipher cipher = Cipher.getInstance("AES");
+        cipher.init(Cipher.ENCRYPT_MODE, secretKey);
+
+
+        Path outPath = Paths.get("C:\\Users\\Dawid\\Desktop\\CVs\\Test\\decrypt.dec");
+        byte[] plainBuf = new byte[2048];
+        try (InputStream in = Files.newInputStream(f.toPath());
+             OutputStream out = Files.newOutputStream(outPath)) {
+            int nread;
+            while ((nread = in.read(plainBuf)) > 0) {
+                byte[] enc = cipher.update(plainBuf, 0, nread);
+                out.write(enc);
+            }
+            byte[] enc = cipher.doFinal();
+            out.write(enc);
+        }
+        return outPath.toFile();
     }
 
 }
+
+
