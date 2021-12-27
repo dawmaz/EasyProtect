@@ -75,19 +75,40 @@ public class Controller implements Initializable {
         process(CryptoUtils.Mode.DECODE);
     }
 
-    private void process(CryptoUtils.Mode mode) throws NoSuchPaddingException, IllegalBlockSizeException, NoSuchAlgorithmException, IOException, BadPaddingException, InvalidKeySpecException, InvalidKeyException {
+    private void process(CryptoUtils.Mode mode)  {
         CryptoUtils cu = new CryptoUtils();
         String outputPath = prepareOutputPath();
 
-        switch(mode){
-            case DECODE:{
-                cu.decrypt(passwordField.getText(),new File(fileTextField.getText()),new File(outputPath));
-            }
-            case ENCODE:{
-                cu.encrypt(passwordField.getText(),new File(fileTextField.getText()),new File(outputPath));
+        try {
+            switch(mode){
+                case DECODE: {
+                    cu.decrypt(passwordField.getText(), new File(fileTextField.getText()), new File(outputPath));
+                    Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                    alert.setTitle("Success!");
+                    alert.setHeaderText("Decoding operation performed correctly");
+                    alert.show();
+                    break;
+                }
+                case ENCODE:{
+                    cu.encrypt(passwordField.getText(),new File(fileTextField.getText()),new File(outputPath));
+                    Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                    alert.setTitle("Success!");
+                    alert.setHeaderText("Encoding operation performed correctly");
+                    alert.show();
+                    break;
+                }
             }
         }
+        catch (NoSuchPaddingException | NoSuchAlgorithmException | InvalidKeySpecException | InvalidKeyException | IOException | IllegalBlockSizeException | BadPaddingException e) {
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Process cannot be finished!");
+            alert.setHeaderText(e.getMessage());
+            alert.show();
+        }
+
+
     }
+
 
     private String prepareOutputPath() {
         if(outputTextField.getText().isEmpty()||!outputCheckBox.isSelected()){
