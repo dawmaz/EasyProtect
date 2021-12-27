@@ -22,7 +22,7 @@ public class Test {
 
     public static void main(String[] args) throws Exception {
 
-        encrypt(new File("E:\\Harry Potter The Complete Saga - 1080p - Yify\\HARRY-POTTER-07-1080p\\HARRY-POTTER-07-1080p\\Harry.Potter.and.the.Deathly.Hallows.Part.1.2010.MULTi.1080p.BluRay.x264.mkv"),"pass".getBytes());
+        encrypt(new File("C:\\Users\\Dawid\\Desktop\\CVs\\Test\\Dawid_CV.pdf"),"pass".getBytes());
     }
 
     public static  File encrypt(File f, byte[] key) throws Exception
@@ -37,9 +37,9 @@ public class Test {
         byte[] plainBuf = new byte[2048];
         try (InputStream in = Files.newInputStream(f.toPath());
              OutputStream out = Files.newOutputStream(outPath)) {
-            int nread;
-            while ((nread = in.read(plainBuf)) > 0) {
-                byte[] enc = cipher.update(plainBuf, 0, nread);
+
+            while ((in.read(plainBuf)) > 0) {
+                byte[] enc = cipher.update(plainBuf);
                 out.write(enc);
             }
             byte[] enc = cipher.doFinal();
