@@ -1,6 +1,7 @@
 package crypto;
 
 import crypto.base.Coder;
+import crypto.base.ExtensionDecoder;
 import crypto.base.ExtensionEncoder;
 
 import javax.crypto.*;
@@ -21,7 +22,6 @@ public class CryptoUtils {
      private static final String ALGORITHM = "AES";
      private static final String SALT = "0;pMz$31Xa€yV";
 
-     private static final String SEPARATOR = String.valueOf(File.separatorChar);
      private static final String ENCRYPTED_EXTENSION= ".DEF";
      private static final String EXTENSION_SEPARATOR = " ";
 
@@ -47,19 +47,17 @@ public class CryptoUtils {
     }
 
     public void decrypt(String password, File inputFile, File outputFile) throws NoSuchPaddingException, NoSuchAlgorithmException, InvalidKeySpecException, InvalidKeyException, IOException, IllegalBlockSizeException, BadPaddingException {
-        initCipher(password,Cipher.DECRYPT_MODE);
+        Coder.CoderBuilder builder = Coder.getBuilder();
+        Coder tempEncoder = builder.withAlgorithm(ALGORITHM)
+                .withTransformation(TRANSFORMATION)
+                .withInputPath(inputFile.getPath())
+                .withOutputPath(outputFile.getPath())
+                .withKey(new SecretKeySpec(CryptoUtils.createKey(password), ALGORITHM))
+                .withMode(Cipher.DECRYPT_MODE)
+                .build();
 
-        byte [] inputBytes = createBytesFromFile(inputFile,Cipher.DECRYPT_MODE);
-        byte [] outputBytes = cipher.doFinal(inputBytes);
-
-        int separatorIndex = findExtensionSeparator(outputBytes);
-        String extension = new String(Arrays.copyOfRange(outputBytes,0,separatorIndex));
-        byte [] finalOutputBytes = Arrays.copyOfRange(outputBytes,separatorIndex+1,outputBytes.length);
-
-        String fileName = inputFile.getName().substring(0,inputFile.getName().lastIndexOf("."));
-        File finalOutputFile = new File(outputFile.getPath()+SEPARATOR+fileName+extension);
-
-        writeToFile(finalOutputFile,finalOutputBytes);
+        ExtensionDecoder decoder = new ExtensionDecoder(tempEncoder);
+        decoder.decodeAfterFirstAppearance(EXTENSION_SEPARATOR.getBytes()[0]);
     }
 
     private int findExtensionSeparator(byte[] array) {

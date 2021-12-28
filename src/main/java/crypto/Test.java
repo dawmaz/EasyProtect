@@ -29,9 +29,10 @@ public class Test {
         Key secretKey = new SecretKeySpec(new CryptoUtils().createKey("pass"),"AES");
         Cipher cipher = Cipher.getInstance("AES");
         cipher.init(Cipher.ENCRYPT_MODE, secretKey);
+        System.out.println(cipher);
 
         String outPath = "C:\\Users\\Dawid\\Desktop\\CVs\\Test\\decrypt.dec";
-        byte[] plainBuf = new byte[2048];
+        byte[] plainBuf = new byte[1];
 
         try (InputStream in = new FileInputStream(f.getPath());
              OutputStream out = new FileOutputStream(outPath)) {
@@ -48,12 +49,12 @@ public class Test {
     public static  void  decrypt(File f, byte[] key) throws Exception
     {
         System.out.println("Starting Encryption");
-        Key secretKey = new SecretKeySpec(new CryptoUtils().createKey("pass"),"AES");
+        Key secretKey = new SecretKeySpec(new CryptoUtils().createKey("123"),"AES");
         Cipher cipher = Cipher.getInstance("AES");
         cipher.init(Cipher.DECRYPT_MODE, secretKey);
-
+        System.out.println(cipher);
         String outPath = "C:\\Users\\Dawid\\Desktop\\CVs\\Test\\decrypt.pdf";
-        byte[] plainBuf = new byte[2048];
+        byte[] plainBuf = new byte[1];
 
         try (InputStream in = new FileInputStream(f.getPath());
              OutputStream out = new FileOutputStream(outPath)) {

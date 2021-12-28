@@ -8,6 +8,7 @@ import java.security.InvalidKeyException;
 import java.security.Key;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 
@@ -49,6 +50,7 @@ public class ExtensionDecoder extends Coder{
 
     private String decodeFileExtension(byte separator) throws InvalidKeyException,IOException{
         cipher.init(mode, secretKey);
+        System.out.println(cipher);
         List<Byte> list = new ArrayList<>();
 
         byte[] oneByte = new byte[1];
@@ -56,9 +58,12 @@ public class ExtensionDecoder extends Coder{
 
         try(InputStream input = new FileInputStream(inputFile)){
 
+            System.out.println(Arrays.toString(oneByte));
             while(true){
                 input.read(oneByte);
+                System.out.println(Arrays.toString(oneByte));
                 byte[] enc = cipher.update(oneByte);
+                System.out.println(Arrays.toString(enc));
                 if(enc[0]==separator)
                     break;
                 list.add(enc[0]);
