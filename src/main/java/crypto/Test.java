@@ -20,6 +20,7 @@ public class Test {
     public static void main(String[] args) throws Exception {
 
         encrypt(new File("C:\\Users\\Dawid\\Desktop\\CVs\\Test\\Dawid_CV.pdf"),"pass".getBytes());
+        decrypt(new File("C:\\Users\\Dawid\\Desktop\\CVs\\Test\\decrypt.dec"),"pass".getBytes());
     }
 
     public static  void  encrypt(File f, byte[] key) throws Exception
@@ -39,8 +40,28 @@ public class Test {
                 byte[] enc = cipher.update(plainBuf);
                 out.write(enc);
             }
-            byte[] enc = cipher.doFinal();
-            out.write(enc);
+           // byte[] enc = cipher.doFinal();
+           // out.write(enc);
+        }
+    }
+
+    public static  void  decrypt(File f, byte[] key) throws Exception
+    {
+        System.out.println("Starting Encryption");
+        Key secretKey = new SecretKeySpec(new CryptoUtils().createKey("pass"),"AES");
+        Cipher cipher = Cipher.getInstance("AES");
+        cipher.init(Cipher.DECRYPT_MODE, secretKey);
+
+        String outPath = "C:\\Users\\Dawid\\Desktop\\CVs\\Test\\decrypt.pdf";
+        byte[] plainBuf = new byte[2048];
+
+        try (InputStream in = new FileInputStream(f.getPath());
+             OutputStream out = new FileOutputStream(outPath)) {
+
+            while ((in.read(plainBuf)) > 0) {
+                byte[] enc = cipher.update(plainBuf);
+                out.write(enc);
+            }
         }
     }
 

@@ -30,7 +30,7 @@ public class Coder {
     }
 
     public void process() throws InvalidKeyException, IOException, IllegalBlockSizeException, BadPaddingException {
-        cipher.init(Cipher.ENCRYPT_MODE, secretKey);
+        cipher.init(mode, secretKey);
 
         byte[] buffer = new byte[2048];
 
@@ -41,9 +41,6 @@ public class Coder {
                 byte[] enc = cipher.update(buffer);
                 output.write(enc);
             }
-
-            byte[] last = cipher.doFinal();
-            output.write(last);
         }
     }
 

@@ -1,10 +1,10 @@
 package crypto.base;
 
 import javax.crypto.BadPaddingException;
+import javax.crypto.Cipher;
 import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
-import java.io.File;
-import java.io.IOException;
+import java.io.*;
 import java.security.InvalidKeyException;
 import java.security.Key;
 import java.security.NoSuchAlgorithmException;
@@ -19,8 +19,21 @@ public class ExtensionEncoder extends Coder{
         super(coder.inputFile, coder.outputFile, coder.transformation, coder.algorithm, coder.secretKey, coder.mode);
     }
 
-    @Override
-    public void process() throws InvalidKeyException, IOException, IllegalBlockSizeException, BadPaddingException {
-        super.process();
+    public void encodeFirstThenProcess(byte[] firstPart) throws InvalidKeyException, IOException, IllegalBlockSizeException, BadPaddingException {
+        cipher.init(mode, secretKey);
+
+        byte[] buffer = new byte[2048];
+
+        try(InputStream input = new FileInputStream(inputFile);
+            OutputStream output = new FileOutputStream(outputFile)){
+
+            byte [] first = cipher.update(firstPart);
+            output.write(first);
+
+            while(input.read(buffer)>0){
+                byte[] enc = cipher.update(buffer);
+                output.write(enc);
+            }
+        }
     }
 }
