@@ -12,7 +12,7 @@ import java.security.spec.KeySpec;
 import java.util.Arrays;
 
 
-public class CryptoUtils implements Cryptoable {
+public class CryptoUtils {
 
      private static final String TRANSFORMATION = "AES";
      private static final String ALGORITHM = "AES";
@@ -28,7 +28,6 @@ public class CryptoUtils implements Cryptoable {
          ENCODE,DECODE;
      }
 
-    @Override
     public void encrypt(String password, File inputFile, File outputFile) throws NoSuchPaddingException, NoSuchAlgorithmException, InvalidKeyException, IOException, IllegalBlockSizeException, BadPaddingException, InvalidKeySpecException {
         initCipher(password,Cipher.ENCRYPT_MODE);
 
@@ -41,7 +40,6 @@ public class CryptoUtils implements Cryptoable {
         writeToFile(finalOutFile,outputBytes);
     }
 
-    @Override
     public void decrypt(String password, File inputFile, File outputFile) throws NoSuchPaddingException, NoSuchAlgorithmException, InvalidKeySpecException, InvalidKeyException, IOException, IllegalBlockSizeException, BadPaddingException {
         initCipher(password,Cipher.DECRYPT_MODE);
 
@@ -106,7 +104,7 @@ public class CryptoUtils implements Cryptoable {
         cipher.init(mode,secretKey);
     }
 
-    public byte[] createKey(String password) throws NoSuchAlgorithmException, InvalidKeySpecException {
+    public static byte[] createKey(String password) throws NoSuchAlgorithmException, InvalidKeySpecException {
         KeySpec spec = new PBEKeySpec(password.toCharArray(), SALT.getBytes(), 65536, 256);
         SecretKeyFactory f = SecretKeyFactory.getInstance("PBKDF2WithHmacSHA1");
         return f.generateSecret(spec).getEncoded();

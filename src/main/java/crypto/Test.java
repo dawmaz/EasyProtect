@@ -5,10 +5,7 @@ import javax.crypto.Cipher;
 import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
 import javax.crypto.spec.SecretKeySpec;
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
+import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -25,18 +22,18 @@ public class Test {
         encrypt(new File("C:\\Users\\Dawid\\Desktop\\CVs\\Test\\Dawid_CV.pdf"),"pass".getBytes());
     }
 
-    public static  File encrypt(File f, byte[] key) throws Exception
+    public static  void  encrypt(File f, byte[] key) throws Exception
     {
         System.out.println("Starting Encryption");
         Key secretKey = new SecretKeySpec(new CryptoUtils().createKey("pass"),"AES");
         Cipher cipher = Cipher.getInstance("AES");
         cipher.init(Cipher.ENCRYPT_MODE, secretKey);
 
-
-        Path outPath = Paths.get("C:\\Users\\Dawid\\Desktop\\CVs\\Test\\decrypt.dec");
+        String outPath = "C:\\Users\\Dawid\\Desktop\\CVs\\Test\\decrypt.dec";
         byte[] plainBuf = new byte[2048];
-        try (InputStream in = Files.newInputStream(f.toPath());
-             OutputStream out = Files.newOutputStream(outPath)) {
+
+        try (InputStream in = new FileInputStream(f.getPath());
+             OutputStream out = new FileOutputStream(outPath)) {
 
             while ((in.read(plainBuf)) > 0) {
                 byte[] enc = cipher.update(plainBuf);
@@ -45,7 +42,6 @@ public class Test {
             byte[] enc = cipher.doFinal();
             out.write(enc);
         }
-        return outPath.toFile();
     }
 
 }
