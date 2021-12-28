@@ -10,16 +10,16 @@ import java.security.Key;
 import java.security.NoSuchAlgorithmException;
 
 public class Coder {
-    private final File inputFile;
-    private final File outputFile;
-    private final String transformation;
-    private final String algorithm;
-    private final Key secretKey;
-    private final int mode;
+    protected final File inputFile;
+    protected final File outputFile;
+    protected final String transformation;
+    protected final String algorithm;
+    protected final Key secretKey;
+    protected final int mode;
 
-    private final Cipher cipher;
+    protected final Cipher cipher;
 
-    private Coder(File inputFile,File outputFile,String transformation,String algorithm, Key secretKey, int mode) throws NoSuchPaddingException, NoSuchAlgorithmException {
+    protected Coder(File inputFile,File outputFile,String transformation,String algorithm, Key secretKey, int mode) throws NoSuchPaddingException, NoSuchAlgorithmException {
         this.inputFile = inputFile;
         this.outputFile = outputFile;
         this.transformation = transformation;
