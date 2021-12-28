@@ -1,5 +1,8 @@
 package crypto;
 
+import crypto.base.Coder;
+import crypto.base.ExtensionEncoder;
+
 import javax.crypto.*;
 import javax.crypto.spec.PBEKeySpec;
 import javax.crypto.spec.SecretKeySpec;
@@ -28,16 +31,19 @@ public class CryptoUtils {
          ENCODE,DECODE;
      }
 
+
     public void encrypt(String password, File inputFile, File outputFile) throws NoSuchPaddingException, NoSuchAlgorithmException, InvalidKeyException, IOException, IllegalBlockSizeException, BadPaddingException, InvalidKeySpecException {
-        initCipher(password,Cipher.ENCRYPT_MODE);
+        Coder.CoderBuilder builder = Coder.getBuilder();
+        Coder tempEncoder = builder.withAlgorithm(ALGORITHM)
+                .withTransformation(TRANSFORMATION)
+                .withInputPath(inputFile.getPath())
+                .withOutputPath(outputFile.getPath())
+                .withKey(new SecretKeySpec(CryptoUtils.createKey(password), ALGORITHM))
+                .withMode(Cipher.ENCRYPT_MODE)
+                .build();
 
-        byte [] inputBytes = createBytesFromFile(inputFile,Cipher.ENCRYPT_MODE);
-        byte [] outputBytes = cipher.doFinal(inputBytes);
-
-        String fileName = inputFile.getName().substring(0,inputFile.getName().lastIndexOf("."));
-        File finalOutFile = new File(outputFile.getPath()+SEPARATOR+fileName+ENCRYPTED_EXTENSION);
-
-        writeToFile(finalOutFile,outputBytes);
+        ExtensionEncoder encoder = new ExtensionEncoder(tempEncoder);
+        encoder.encodeFirstThenProcess(prepareExtensionInfo(inputFile),ENCRYPTED_EXTENSION);
     }
 
     public void decrypt(String password, File inputFile, File outputFile) throws NoSuchPaddingException, NoSuchAlgorithmException, InvalidKeySpecException, InvalidKeyException, IOException, IllegalBlockSizeException, BadPaddingException {

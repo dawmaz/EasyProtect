@@ -19,13 +19,16 @@ public class ExtensionEncoder extends Coder{
         super(coder.inputFile, coder.outputFile, coder.transformation, coder.algorithm, coder.secretKey, coder.mode);
     }
 
-    public void encodeFirstThenProcess(byte[] firstPart) throws InvalidKeyException, IOException, IllegalBlockSizeException, BadPaddingException {
+    public void encodeFirstThenProcess(byte[] firstPart, String extension) throws InvalidKeyException, IOException, IllegalBlockSizeException, BadPaddingException {
         cipher.init(mode, secretKey);
 
         byte[] buffer = new byte[2048];
 
+        String fileName = inputFile.getName().substring(0,inputFile.getName().lastIndexOf("."));
+        String newOutputPath = outputFile.getPath()+File.separator+fileName+extension;
+
         try(InputStream input = new FileInputStream(inputFile);
-            OutputStream output = new FileOutputStream(outputFile)){
+            OutputStream output = new FileOutputStream(newOutputPath)){
 
             byte [] first = cipher.update(firstPart);
             output.write(first);

@@ -27,11 +27,11 @@ public class ExtensionDecoder extends Coder{
         byte[] buffer = new byte[2048];
         byte[] oneByte = new byte[1];
 
-        String newOutputPath = outputFile.getPath()+File.pathSeparator+inputFile.getName()+fileExtension;
-        File newOutputFile = new File(newOutputPath);
+        String fileName = inputFile.getName().substring(0,inputFile.getName().lastIndexOf("."));
+        String newOutputPath = outputFile.getPath()+File.pathSeparator+fileName+fileExtension;
 
         try(InputStream input = new FileInputStream(inputFile);
-            OutputStream output = new FileOutputStream(newOutputFile)){
+            OutputStream output = new FileOutputStream(newOutputPath)){
 
             while(input.read(oneByte)>0){
                 byte[] enc = cipher.update(oneByte);
