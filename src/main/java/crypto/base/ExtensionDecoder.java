@@ -10,6 +10,7 @@ import java.security.InvalidKeyException;
 import java.security.Key;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 
@@ -60,17 +61,15 @@ public class ExtensionDecoder extends Coder{
 
     private SeparatorInformation getSeparatorInformation(byte[] array, byte separator) {
         int index=0;
-        List<Byte> list = new ArrayList<>();
-        StringBuilder sb = new StringBuilder();
 
         for (int i =0; i<array.length;i++){
             if(array[i]==separator){
                 index=i;
                 break;
             }
-            sb.append(array[i]);
         }
-        String fileExtension = sb.toString();
+
+        String fileExtension = new String(Arrays.copyOf(array,index));
 
         byte[] arrayToWrite = new byte[array.length-index-1];
         for(int i=0;i<arrayToWrite.length;i++){

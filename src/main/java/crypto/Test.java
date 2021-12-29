@@ -24,7 +24,10 @@ public class Test {
         System.out.println(Arrays.toString(".pdf".getBytes()));
         byte a =46;
         byte b = 112;
-        System.out.println(String.valueOf(a));
+        byte[] bytes = new byte[2];
+        bytes[0] =a;
+        bytes[1] = b;
+        System.out.println(new String());
     }
 
 
