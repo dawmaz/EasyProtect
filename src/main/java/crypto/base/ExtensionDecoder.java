@@ -36,8 +36,9 @@ public class ExtensionDecoder extends Coder{
             input.read(buffer);
             output.write(separatorInformation.getArray());
 
-            while(input.read(buffer)>0){
-                byte []enc = cipher.update(buffer);
+            int len;
+            while((len=input.read(buffer))>0){
+                byte []enc = cipher.update(buffer,0,len);
                 output.write(enc);
             }
         }
@@ -49,8 +50,8 @@ public class ExtensionDecoder extends Coder{
 
         try(InputStream input = new FileInputStream(inputFile)){
 
-                input.read(buffer);
-                byte[] enc = cipher.update(buffer);
+                int len = input.read(buffer);
+                byte[] enc = cipher.update(buffer,0,len);
 
             return getSeparatorInformation(enc,separator);
         }

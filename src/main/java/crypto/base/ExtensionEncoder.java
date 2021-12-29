@@ -29,11 +29,13 @@ public class ExtensionEncoder extends Coder{
         try(InputStream input = new FileInputStream(inputFile);
             OutputStream output = new FileOutputStream(newOutputPath)){
 
-            byte [] first = cipher.update(firstPart);
+            byte [] first = cipher.update(firstPart,0,firstPart.length);
             output.write(first);
 
-            while(input.read(buffer)>0){
-                byte[] enc = cipher.update(buffer);
+            int len;
+
+            while((len=input.read(buffer))>0){
+                byte[] enc = cipher.update(buffer,0,len);
                 output.write(enc);
             }
         }
