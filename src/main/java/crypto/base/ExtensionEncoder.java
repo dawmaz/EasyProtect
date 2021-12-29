@@ -7,7 +7,7 @@ import java.io.*;
 import java.security.InvalidKeyException;
 import java.security.Key;
 import java.security.NoSuchAlgorithmException;
-import java.util.Arrays;
+
 
 public class ExtensionEncoder extends Coder{
 

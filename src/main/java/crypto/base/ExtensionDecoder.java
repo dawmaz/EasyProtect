@@ -1,8 +1,6 @@
 package crypto.base;
 
 import crypto.SeparatorInformation;
-import javafx.scene.effect.Blend;
-
 import javax.crypto.BadPaddingException;
 import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;

@@ -1,4 +1,4 @@
-package sample;
+package application;
 
 
 import crypto.CryptoUtils;
@@ -68,11 +68,11 @@ public class Controller implements Initializable {
         }
     }
 
-    public void encrypt() throws NoSuchPaddingException, IllegalBlockSizeException, NoSuchAlgorithmException, IOException, BadPaddingException, InvalidKeySpecException, InvalidKeyException {
+    public void encrypt()  {
         process(Cipher.ENCRYPT_MODE);
     }
 
-    public void decrypt() throws NoSuchPaddingException, IllegalBlockSizeException, NoSuchAlgorithmException, IOException, BadPaddingException, InvalidKeySpecException, InvalidKeyException {
+    public void decrypt()  {
         process(Cipher.DECRYPT_MODE);
     }
 
