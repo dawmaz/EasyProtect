@@ -1,5 +1,7 @@
 package crypto.base;
 
+import crypto.SeparatorInformation;
+
 import javax.crypto.BadPaddingException;
 import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
@@ -8,71 +10,74 @@ import java.security.InvalidKeyException;
 import java.security.Key;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 
 public class ExtensionDecoder extends Coder{
 
-    protected ExtensionDecoder(File inputFile, File outputFile, String transformation, String algorithm, Key secretKey, int mode) throws NoSuchPaddingException, NoSuchAlgorithmException {
+    private final int bufferSize = 2048;
+
+    protected ExtensionDecoder(File inputFile, File outputFile, String transformation, String algorithm, Key secretKey, int mode) throws NoSuchPaddingException, NoSuchAlgorithmException, InvalidKeyException {
         super(inputFile, outputFile, transformation, algorithm, secretKey, mode);
     }
 
-    public ExtensionDecoder(Coder coder) throws NoSuchPaddingException, NoSuchAlgorithmException {
+    public ExtensionDecoder(Coder coder) throws NoSuchPaddingException, NoSuchAlgorithmException, InvalidKeyException {
         super(coder.inputFile, coder.outputFile, coder.transformation, coder.algorithm, coder.secretKey, coder.mode);
     }
 
     public void decodeAfterFirstAppearance(byte separator) throws InvalidKeyException,IOException, IllegalBlockSizeException, BadPaddingException {
-
-        String fileExtension = decodeFileExtension(separator);
-        byte[] buffer = new byte[2048];
-        byte[] oneByte = new byte[1];
+        SeparatorInformation separatorInformation = getInfo(separator);
+        byte[] buffer = new byte[bufferSize];
 
         String fileName = inputFile.getName().substring(0,inputFile.getName().lastIndexOf("."));
-        String newOutputPath = outputFile.getPath()+File.pathSeparator+fileName+fileExtension;
+        String newOutputPath = outputFile.getPath()+File.separator+fileName+separatorInformation.getExtension();
 
         try(InputStream input = new FileInputStream(inputFile);
             OutputStream output = new FileOutputStream(newOutputPath)){
 
-            while(input.read(oneByte)>0){
-                byte[] enc = cipher.update(oneByte);
-                if(enc[0]==separator)
-                    break;
-            }
+            input.read(buffer);
+            output.write(separatorInformation.getArray());
 
             while(input.read(buffer)>0){
-                byte[] enc = cipher.update(buffer);
+                byte []enc = cipher.update(buffer);
                 output.write(enc);
             }
         }
 
     }
 
-    private String decodeFileExtension(byte separator) throws InvalidKeyException,IOException{
-        cipher.init(mode, secretKey);
-        System.out.println(cipher);
-        List<Byte> list = new ArrayList<>();
-
-        byte[] oneByte = new byte[1];
-        String fileExtension;
+    private SeparatorInformation getInfo(byte separator) throws InvalidKeyException,IOException{
+        byte[] buffer = new byte[bufferSize];
 
         try(InputStream input = new FileInputStream(inputFile)){
 
-            System.out.println(Arrays.toString(oneByte));
-            while(true){
-                input.read(oneByte);
-                System.out.println(Arrays.toString(oneByte));
-                byte[] enc = cipher.update(oneByte);
-                System.out.println(Arrays.toString(enc));
-                if(enc[0]==separator)
-                    break;
-                list.add(enc[0]);
-            }
+                input.read(buffer);
+                byte[] enc = cipher.update(buffer);
 
-             fileExtension = list.stream().map(String::valueOf).reduce("",(a,b)->a+b);
+            return getSeparatorInformation(enc,separator);
+        }
+    }
+
+    private SeparatorInformation getSeparatorInformation(byte[] array, byte separator) {
+        int index=0;
+        List<Byte> list = new ArrayList<>();
+        StringBuilder sb = new StringBuilder();
+
+        for (int i =0; i<array.length;i++){
+            if(array[i]==separator){
+                index=i;
+                break;
+            }
+            sb.append(array[i]);
+        }
+        String fileExtension = sb.toString();
+
+        byte[] arrayToWrite = new byte[array.length-index-1];
+        for(int i=0;i<arrayToWrite.length;i++){
+            arrayToWrite[i]=array[++index];
         }
 
-      return fileExtension;
+    return new SeparatorInformation(fileExtension,arrayToWrite);
     }
 
 

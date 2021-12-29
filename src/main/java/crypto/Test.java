@@ -19,9 +19,14 @@ public class Test {
 
     public static void main(String[] args) throws Exception {
 
-        encrypt(new File("C:\\Users\\Dawid\\Desktop\\CVs\\Test\\Dawid_CV.pdf"),"pass".getBytes());
-        decrypt(new File("C:\\Users\\Dawid\\Desktop\\CVs\\Test\\decrypt.dec"),"pass".getBytes());
+        //encrypt(new File("C:\\Users\\Dawid\\Desktop\\CVs\\Test\\Dawid_CV.pdf"),"pass".getBytes());
+        //decrypt(new File("C:\\Users\\Dawid\\Desktop\\CVs\\Test\\decrypt.dec"),"pass".getBytes());
+        System.out.println(Arrays.toString(".pdf".getBytes()));
+        byte a =46;
+        byte b = 112;
+        System.out.println(String.valueOf(a));
     }
+
 
     public static  void  encrypt(File f, byte[] key) throws Exception
     {
@@ -55,12 +60,14 @@ public class Test {
         System.out.println(cipher);
         String outPath = "C:\\Users\\Dawid\\Desktop\\CVs\\Test\\decrypt.pdf";
         byte[] plainBuf = new byte[1];
-
+        int count=0;
         try (InputStream in = new FileInputStream(f.getPath());
              OutputStream out = new FileOutputStream(outPath)) {
 
             while ((in.read(plainBuf)) > 0) {
                 byte[] enc = cipher.update(plainBuf);
+                System.out.println(count++ + " encrypted: "+Arrays.toString(plainBuf));
+                System.out.println(count++ + " decrypted: "+Arrays.toString(enc));
                 out.write(enc);
             }
         }

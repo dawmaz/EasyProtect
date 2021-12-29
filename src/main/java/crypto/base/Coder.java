@@ -19,7 +19,7 @@ public class Coder {
 
     protected final Cipher cipher;
 
-    protected Coder(File inputFile,File outputFile,String transformation,String algorithm, Key secretKey, int mode) throws NoSuchPaddingException, NoSuchAlgorithmException {
+    protected Coder(File inputFile,File outputFile,String transformation,String algorithm, Key secretKey, int mode) throws NoSuchPaddingException, NoSuchAlgorithmException, InvalidKeyException {
         this.inputFile = inputFile;
         this.outputFile = outputFile;
         this.transformation = transformation;
@@ -27,6 +27,7 @@ public class Coder {
         this.secretKey = secretKey;
         this.mode = mode;
         cipher = Cipher.getInstance(transformation);
+        cipher.init(mode, secretKey);
     }
 
     public void process() throws InvalidKeyException, IOException, IllegalBlockSizeException, BadPaddingException {
@@ -108,7 +109,7 @@ public class Coder {
             return this;
         }
 
-        public Coder build() throws NoSuchPaddingException, NoSuchAlgorithmException {
+        public Coder build() throws NoSuchPaddingException, NoSuchAlgorithmException, InvalidKeyException {
             verify();
             return new Coder(inputFile,outputFile,transformation,algorithm,secretKey,mode);
         }

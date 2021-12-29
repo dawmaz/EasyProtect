@@ -11,11 +11,11 @@ import java.security.NoSuchAlgorithmException;
 
 public class ExtensionEncoder extends Coder{
 
-    protected ExtensionEncoder(File inputFile, File outputFile, String transformation, String algorithm, Key secretKey, int mode) throws NoSuchPaddingException, NoSuchAlgorithmException {
+    protected ExtensionEncoder(File inputFile, File outputFile, String transformation, String algorithm, Key secretKey, int mode) throws NoSuchPaddingException, NoSuchAlgorithmException, InvalidKeyException {
         super(inputFile, outputFile, transformation, algorithm, secretKey, mode);
     }
 
-    public ExtensionEncoder(Coder coder) throws NoSuchPaddingException, NoSuchAlgorithmException {
+    public ExtensionEncoder(Coder coder) throws NoSuchPaddingException, NoSuchAlgorithmException, InvalidKeyException {
         super(coder.inputFile, coder.outputFile, coder.transformation, coder.algorithm, coder.secretKey, coder.mode);
     }
 
