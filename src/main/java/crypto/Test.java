@@ -1,34 +1,81 @@
 package crypto;
 
 import javax.crypto.BadPaddingException;
+import javax.crypto.Cipher;
 import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
-import java.io.File;
-import java.io.IOException;
+import javax.crypto.spec.SecretKeySpec;
+import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.security.InvalidKeyException;
+import java.security.Key;
 import java.security.NoSuchAlgorithmException;
 import java.security.spec.InvalidKeySpecException;
 import java.util.Arrays;
 
 public class Test {
 
-    public static void main(String[] args) throws NoSuchPaddingException, IllegalBlockSizeException, NoSuchAlgorithmException, IOException, BadPaddingException, InvalidKeyException, InvalidKeySpecException {
-        CryptoUtils utils= new CryptoUtils();
-        //utils.encrypt("1234",new File("C:\\Users\\Dawid\\eclipse-workspace2\\EasyProtect\\Dawid_CV_U.docx"),new File("C:\\Users\\Dawid\\eclipse-workspace2\\EasyProtect\\Dawid_CV_U.enc"));
-        //utils.decrypt("1234",new File("C:\\Users\\Dawid\\eclipse-workspace2\\EasyProtect\\Dawid_CV_U.enc"),new File("C:\\Users\\Dawid\\eclipse-workspace2\\EasyProtect\\src"));
+    public static void main(String[] args) throws Exception {
 
-      //  int[] array = {10, 20, 30, 40, 50, 60, 70, 80, 90, 100};
-       // int index = 3;
+        //encrypt(new File("C:\\Users\\Dawid\\Desktop\\CVs\\Test\\Dawid_CV.pdf"),"pass".getBytes());
+        //decrypt(new File("C:\\Users\\Dawid\\Desktop\\CVs\\Test\\decrypt.dec"),"pass".getBytes());
+        System.out.println(Arrays.toString(".pdf".getBytes()));
+        byte a =46;
+        byte b = 112;
+        byte[] bytes = new byte[2];
+        bytes[0] =a;
+        bytes[1] = b;
+        System.out.println(new String());
+    }
 
-       // System.out.println(Arrays.toString( Arrays.copyOfRange(array,1,array.length)));
-        File file =new File("C:\\Users\\Dawid\\eclipse-workspace2\\EasyProtect\\Dawid_CV_U.docx");
-        System.out.println(file.getName());
-        System.out.println(file.getPath());
-        System.out.println(file.getAbsoluteFile());
-        System.out.println(file.getAbsolutePath());
-        System.out.println(file.getCanonicalFile());
-        System.out.println(file.getCanonicalPath());
-        System.out.println(file.getParentFile());
+
+    public static  void  encrypt(File f, byte[] key) throws Exception
+    {
+        System.out.println("Starting Encryption");
+        Key secretKey = new SecretKeySpec(new CryptoUtils().createKey("pass"),"AES");
+        Cipher cipher = Cipher.getInstance("AES");
+        cipher.init(Cipher.ENCRYPT_MODE, secretKey);
+        System.out.println(cipher);
+
+        String outPath = "C:\\Users\\Dawid\\Desktop\\CVs\\Test\\decrypt.dec";
+        byte[] plainBuf = new byte[1];
+
+        try (InputStream in = new FileInputStream(f.getPath());
+             OutputStream out = new FileOutputStream(outPath)) {
+
+            while ((in.read(plainBuf)) > 0) {
+                byte[] enc = cipher.update(plainBuf);
+                out.write(enc);
+            }
+           // byte[] enc = cipher.doFinal();
+           // out.write(enc);
+        }
+    }
+
+    public static  void  decrypt(File f, byte[] key) throws Exception
+    {
+        System.out.println("Starting Encryption");
+        Key secretKey = new SecretKeySpec(new CryptoUtils().createKey("123"),"AES");
+        Cipher cipher = Cipher.getInstance("AES");
+        cipher.init(Cipher.DECRYPT_MODE, secretKey);
+        System.out.println(cipher);
+        String outPath = "C:\\Users\\Dawid\\Desktop\\CVs\\Test\\decrypt.pdf";
+        byte[] plainBuf = new byte[1];
+        int count=0;
+        try (InputStream in = new FileInputStream(f.getPath());
+             OutputStream out = new FileOutputStream(outPath)) {
+
+            while ((in.read(plainBuf)) > 0) {
+                byte[] enc = cipher.update(plainBuf);
+                System.out.println(count++ + " encrypted: "+Arrays.toString(plainBuf));
+                System.out.println(count++ + " decrypted: "+Arrays.toString(enc));
+                out.write(enc);
+            }
+        }
     }
 
 }
+
+
