@@ -7,6 +7,7 @@ import java.io.*;
 import java.security.InvalidKeyException;
 import java.security.Key;
 import java.security.NoSuchAlgorithmException;
+import java.util.Arrays;
 
 public class ExtensionEncoder extends Coder{
 
@@ -38,6 +39,8 @@ public class ExtensionEncoder extends Coder{
                 byte[] enc = cipher.update(buffer,0,len);
                 output.write(enc);
             }
+            byte[] finalBytes = cipher.doFinal();
+            output.write(finalBytes);
         }
     }
 }

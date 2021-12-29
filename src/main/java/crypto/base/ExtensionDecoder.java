@@ -1,6 +1,7 @@
 package crypto.base;
 
 import crypto.SeparatorInformation;
+import javafx.scene.effect.Blend;
 
 import javax.crypto.BadPaddingException;
 import javax.crypto.IllegalBlockSizeException;
@@ -41,17 +42,23 @@ public class ExtensionDecoder extends Coder{
                 byte []enc = cipher.update(buffer,0,len);
                 output.write(enc);
             }
+
+            byte[] finalBytes = cipher.doFinal();
+            output.write(finalBytes);
         }
 
     }
 
-    private SeparatorInformation getInfo(byte separator) throws InvalidKeyException,IOException{
+    private SeparatorInformation getInfo(byte separator) throws IOException, IllegalBlockSizeException, BadPaddingException {
         byte[] buffer = new byte[bufferSize];
 
         try(InputStream input = new FileInputStream(inputFile)){
 
                 int len = input.read(buffer);
                 byte[] enc = cipher.update(buffer,0,len);
+
+                if(enc.length==0)
+                    enc = cipher.doFinal();
 
             return getSeparatorInformation(enc,separator);
         }
@@ -68,7 +75,6 @@ public class ExtensionDecoder extends Coder{
         }
 
         String fileExtension = new String(Arrays.copyOf(array,index));
-
         byte[] arrayToWrite = new byte[array.length-index-1];
         for(int i=0;i<arrayToWrite.length;i++){
             arrayToWrite[i]=array[++index];

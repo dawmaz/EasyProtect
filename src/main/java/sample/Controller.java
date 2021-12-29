@@ -10,6 +10,7 @@ import javafx.stage.Stage;
 
 
 import javax.crypto.BadPaddingException;
+import javax.crypto.Cipher;
 import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
 import java.io.File;
@@ -68,20 +69,20 @@ public class Controller implements Initializable {
     }
 
     public void encrypt() throws NoSuchPaddingException, IllegalBlockSizeException, NoSuchAlgorithmException, IOException, BadPaddingException, InvalidKeySpecException, InvalidKeyException {
-        process(CryptoUtils.Mode.ENCODE);
+        process(Cipher.ENCRYPT_MODE);
     }
 
     public void decrypt() throws NoSuchPaddingException, IllegalBlockSizeException, NoSuchAlgorithmException, IOException, BadPaddingException, InvalidKeySpecException, InvalidKeyException {
-        process(CryptoUtils.Mode.DECODE);
+        process(Cipher.DECRYPT_MODE);
     }
 
-    private void process(CryptoUtils.Mode mode)  {
+    private void process(int mode)  {
         CryptoUtils cu = new CryptoUtils();
         String outputPath = prepareOutputPath();
 
         try {
             switch(mode){
-                case DECODE: {
+                case Cipher.DECRYPT_MODE: {
                     cu.decrypt(passwordField.getText(), new File(fileTextField.getText()), new File(outputPath));
                     Alert alert = new Alert(Alert.AlertType.INFORMATION);
                     alert.setTitle("Success!");
@@ -89,7 +90,7 @@ public class Controller implements Initializable {
                     alert.show();
                     break;
                 }
-                case ENCODE:{
+                case Cipher.ENCRYPT_MODE:{
                     cu.encrypt(passwordField.getText(),new File(fileTextField.getText()),new File(outputPath));
                     Alert alert = new Alert(Alert.AlertType.INFORMATION);
                     alert.setTitle("Success!");
